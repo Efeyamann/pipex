@@ -6,9 +6,6 @@ A C program that replicates the behavior of the shell's pipe (`|`) operator, exe
 
 The `pipex` project is part of the 42 curriculum and focuses on process creation, file redirection, and inter-process communication using pipes in Unix systems. It simulates the behavior of:
 
-```sh
-< infile cmd1 | cmd2 > outfile
-
 ## Features
 
 - Executes two commands in a pipeline, similar to the shell's `|` operator.
