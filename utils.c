@@ -52,13 +52,13 @@ char	*get_path(char *cmd, char **env)
 
 	if (!cmd || !*cmd)
 		return (NULL);
-	if (access(cmd, X_OK) == 0)
+	if (access(cmd, X_OK) == 0 && ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
 	i = 0;
 	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
 	if (!env[i])
-		return (NULL);
+		return (ft_strdup(cmd));
 	paths = ft_split(env[i] + 5, ':');
 	if (!paths)
 		return (NULL);
@@ -74,3 +74,4 @@ char	*get_path(char *cmd, char **env)
 	ft_free_tab(paths);
 	return (NULL);
 }
+
