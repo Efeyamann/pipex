@@ -19,36 +19,7 @@ typedef struct s_process
 	char	*cmd;
 }	t_process;
 
-void	execute_command(char *cmd, char **env)
-{
-	char	*path;
-	char	**args;
-
-	args = ft_split(cmd, ' ');
-	if (!args || !args[0])
-	{
-		ft_putstr_fd("empty command\n", 2);
-		ft_free_tab(args);
-		exit(1);
-	}
-	path = get_path(args[0], env);
-	if (!path)
-	{
-		ft_putstr_fd("command not found\n", 2);
-		ft_putstr_fd(args[0], 2);
-		ft_free_tab(args);
-		exit(127);
-	}
-	execve(path, args, env);
-	perror("execve error");
-	ft_free_tab(args);
-	free(path);
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
-	exit(126);
-}
-
-void	set_up_file(t_process *process, int *fd)
+int	open_file(t_process *process)
 {
 	int	file_fd;
 
@@ -58,50 +29,46 @@ void	set_up_file(t_process *process, int *fd)
 		file_fd = open(process->file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (file_fd == -1)
 	{
-		ft_putstr_fd("pipex: error opening file\n", 2);
+		perror("pipex: error opening file");
 		exit(1);
 	}
+	return (file_fd);
+}
+
+void	dup_file(t_process *process, int *fd, int file_fd)
+{
 	if (process->in_out == 0)
 	{
 		if (dup2(file_fd, STDIN_FILENO) == -1
 			|| dup2(fd[1], STDOUT_FILENO) == -1)
+		{
 			perror("pipex dup2 error");
+			exit(1);
+		}
 	}
 	else
 	{
 		if (dup2(fd[0], STDIN_FILENO) == -1
 			|| dup2(file_fd, STDOUT_FILENO) == -1)
+		{
 			perror("pipex dup2 error");
+			exit(1);
+		}
 	}
+}
+
+void	set_up_file(t_process *process, int *fd)
+{
+	int	file_fd;
+
+	file_fd = open_file(process);
+	dup_file(process, fd, file_fd);
 	close(file_fd);
 }
 
-void	child_process(t_process *process, int *fd, char **env)
+int	get_exit_status(int status)
 {
-	set_up_file(process, fd);
-	close(fd[0]);
-	close(fd[1]);
-	execute_command(process->cmd, env);
-}
-
-void	create_forks(int *id, t_process *processes, int *fd, char **env)
-{
-	id[0] = fork();
-	if (id[0] == -1)
-	{
-		perror("fork");
-		exit(1);
-	}
-	if (id[0] == 0)
-		child_process(&processes[0], fd, env);
-	id[1] = fork();
-	if (id[1] == -1)
-	{
-		perror("fork");
-		exit(1);
-	}
-	if (id[1] == 0)
-		child_process(&processes[1], fd, env);
+	return ((status & 0xff00) >> 8);
 }
 
 int	main(int argc, char *argv[], char *env[])
@@ -113,7 +80,7 @@ int	main(int argc, char *argv[], char *env[])
 	t_process	processes[2];
 
 	if (argc != 5)
-		return (perror("Incorrect amount of arguments"), 1);
+		return (ft_putstr_fd("Error: Incorrect arguments\n", 2), 1);
 	if (pipe(fd) == -1)
 		return (perror("pipe"), 1);
 	processes[0].in_out = 0;
@@ -128,9 +95,7 @@ int	main(int argc, char *argv[], char *env[])
 	waitpid(id[0], &status1, 0);
 	waitpid(id[1], &status2, 0);
 	if (status1 != 0)
-		return (status1);
-	if (status2 != 0)
-		return (status2);
-	return (0);
+		return (get_exit_status(status1));
+	return (get_exit_status(status2));
 }
 

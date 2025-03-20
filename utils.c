@@ -57,8 +57,8 @@ char	*get_path(char *cmd, char **env)
 	i = 0;
 	while (env[i] && ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
-	if (!env[i])
-		return (ft_strdup(cmd));
+	if (!env[i] || 	!*(env[i] + 5))
+		return (NULL);
 	paths = ft_split(env[i] + 5, ':');
 	if (!paths)
 		return (NULL);
