@@ -6,18 +6,11 @@
 /*   By: efe <efe@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:54:57 by marvin            #+#    #+#             */
-/*   Updated: 2025/02/25 16:34:49 by efe              ###   ########.fr       */
+/*   Updated: 2025/03/21 20:29:34 by efe              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-typedef struct s_process
-{
-	int		in_out;
-	char	*file;
-	char	*cmd;
-}	t_process;
 
 int	open_file(t_process *process)
 {
