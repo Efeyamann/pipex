@@ -5,6 +5,7 @@ RM = rm -rf
 
 SRCS = pipex.c\
 	utils.c\
+	utils1.c \
 
 OBJS = $(SRCS:.c=.o)
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: efe <efe@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: heret <heret@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:54:57 by marvin            #+#    #+#             */
-/*   Updated: 2025/03/21 20:29:34 by efe              ###   ########.fr       */
+/*   Updated: 2025/04/10 22:16:11 by heret            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,4 +91,3 @@ int	main(int argc, char *argv[], char *env[])
 		return (get_exit_status(status1));
 	return (get_exit_status(status2));
 }
-

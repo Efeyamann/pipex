@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: efe <efe@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: heret <heret@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 17:51:06 by efe               #+#    #+#             */
-/*   Updated: 2025/03/21 20:32:40 by efe              ###   ########.fr       */
+/*   Updated: 2025/04/10 22:24:06 by heret            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,28 @@ static char	*join_paths(const char *dir, const char *cmd)
 	return (full_path);
 }
 
-void	ft_free_tab(char **tab)
+static char	*search_path(char **paths, char *cmd)
 {
-	int	i;
+	int		i;
+	char	*full_path;
 
-	if (!tab)
-		return ;
 	i = 0;
-	while (tab[i])
+	while (paths[i])
 	{
-		free(tab[i]);
+		full_path = join_paths(paths[i], cmd);
+		if (access(full_path, X_OK) == 0)
+			return (ft_free_tab(paths), full_path);
+		free(full_path);
 		i++;
 	}
-	free(tab);
+	ft_free_tab(paths);
+	return (NULL);
 }
 
 char	*get_path(char *cmd, char **env)
 {
 	int		i;
 	char	**paths;
-	char	*full_path;
 
 	if (!cmd || !*cmd)
 		return (NULL);
@@ -62,17 +64,7 @@ char	*get_path(char *cmd, char **env)
 	paths = ft_split(env[i] + 5, ':');
 	if (!paths)
 		return (NULL);
-	i = 0;
-	while (paths[i])
-	{
-		full_path = join_paths(paths[i], cmd);
-		if (access(full_path, X_OK) == 0)
-			return (ft_free_tab(paths), full_path);
-		free(full_path);
-		i++;
-	}
-	ft_free_tab(paths);
-	return (NULL);
+	return (search_path(paths, cmd));
 }
 
 void	execute_command(t_process *process, char *env[])
@@ -130,4 +122,3 @@ void	create_forks(int *id, t_process *processes, int *fd, char *env[])
 		execute_command(&processes[1], env);
 	}
 }
-
