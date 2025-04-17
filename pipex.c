@@ -3,16 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heret <heret@student.42.fr>                +#+  +:+       +#+        */
+/*   By: esir <esir@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:54:57 by marvin            #+#    #+#             */
-/*   Updated: 2025/04/10 22:16:11 by heret            ###   ########.fr       */
+/*   Updated: 2025/04/15 16:45:19 by esir             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include <fcntl.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-int	open_file(t_process *process)
+static int	open_file(t_process *process)
 {
 	int	file_fd;
 
@@ -28,7 +33,7 @@ int	open_file(t_process *process)
 	return (file_fd);
 }
 
-void	dup_file(t_process *process, int *fd, int file_fd)
+static void	dup_file(t_process *process, int *fd, int file_fd)
 {
 	if (process->in_out == 0)
 	{
@@ -87,7 +92,5 @@ int	main(int argc, char *argv[], char *env[])
 	close(fd[1]);
 	waitpid(id[0], &status1, 0);
 	waitpid(id[1], &status2, 0);
-	if (status1 != 0)
-		return (get_exit_status(status1));
 	return (get_exit_status(status2));
 }

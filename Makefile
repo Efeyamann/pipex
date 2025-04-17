@@ -1,6 +1,6 @@
 NAME = pipex
-CC = gcc
-CFLAGS = -Werror -Wall -Wextra -fsanitize=address
+CC = cc
+CFLAGS = -Werror -Wall -Wextra
 RM = rm -rf
 
 SRCS = pipex.c\

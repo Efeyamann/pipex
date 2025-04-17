@@ -3,14 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: heret <heret@student.42.fr>                +#+  +:+       +#+        */
+/*   By: esir <esir@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/22 17:51:06 by efe               #+#    #+#             */
-/*   Updated: 2025/04/10 22:24:06 by heret            ###   ########.fr       */
+/*   Updated: 2025/04/17 09:12:43 by esir             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 static char	*join_paths(const char *dir, const char *cmd)
 {
@@ -39,7 +42,10 @@ static char	*search_path(char **paths, char *cmd)
 	{
 		full_path = join_paths(paths[i], cmd);
 		if (access(full_path, X_OK) == 0)
-			return (ft_free_tab(paths), full_path);
+		{
+			ft_free_tab(paths);
+			return (full_path);
+		}
 		free(full_path);
 		i++;
 	}
